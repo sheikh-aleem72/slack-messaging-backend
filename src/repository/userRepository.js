@@ -1,29 +1,16 @@
 import User from "../schema/user.js";
+import crudRepository from "./crudRepository.js";
 
-export const createUser = async (username, email, password) => {
-  try {
-    const user = await User.create({ username, email, password });
+const userRepository = {
+  ...crudRepository,
+  getUserByEmail: async function (email) {
+    const user = User.findOne({ email });
     return user;
-  } catch (error) {
-    console.log("Error while creating user:", error);
-  }
-};
-
-export const getUserById = async (id) => {
-  try {
-    const user = await User.findOne({ _id: id });
+  },
+  getByName: async function (username) {
+    const user = User.findOne({ username });
     return user;
-  } catch (error) {
-    console.log(error);
-    throw error;
-  }
+  },
 };
 
-export const getAllUsers = async () => {
-  try {
-    const users = await User.find();
-    return users;
-  } catch (error) {
-    console.log(error);
-  }
-};
+export default userRepository;
