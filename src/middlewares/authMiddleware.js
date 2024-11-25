@@ -10,8 +10,8 @@ export const isAuthenticate = async (req, res, next) => {
   if (!token) {
     return res.status(StatusCodes.BAD_REQUEST).json(
       errorReponse({
-        message: "Token is required",
-        explanation: "",
+        message: "No token provided",
+        explanation: "Token is required",
       })
     );
   }
@@ -19,14 +19,21 @@ export const isAuthenticate = async (req, res, next) => {
   // verify token
   try {
     const response = verifyJWT(token);
-
+    if (!response) {
+      return res.status(StatusCodes.FORBIDDEN).json(
+        errorReponse({
+          explanation: "The provided token is invalid",
+          message: "Invalid token",
+        })
+      );
+    }
     // Check if user still exists or not
     const user = await checkIfUserExist(req.body.email);
     if (!user) {
       return res.status(StatusCodes.NOT_FOUND).json(
         errorReponse({
           message: "User not found",
-          explanation: "",
+          explanation: `No user found with ${req.body.email} email`,
         })
       );
     }
@@ -37,6 +44,14 @@ export const isAuthenticate = async (req, res, next) => {
     // call the next middleware
     next();
   } catch (error) {
+    if (error.name === "JsonWebTokenError") {
+      return res.status(StatusCodes.FORBIDDEN).json(
+        errorReponse({
+          message: "User not found",
+          explanation: `No user found with ${req.body.email} email`,
+        })
+      );
+    }
     return res.status(error.status).json(errorReponse(error));
   }
 };
