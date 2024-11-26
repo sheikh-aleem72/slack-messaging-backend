@@ -73,7 +73,7 @@ export const signinUserService = async (userDetails) => {
   };
 };
 
-export const checkIfUserExist = async (id) => {
-  const user = await userRepository.getUserByEmail(id);
+export const checkIfUserExist = async (email) => {
+  const user = await userRepository.getUserByEmail(email);
   return user;
 };

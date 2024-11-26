@@ -1,9 +1,10 @@
-import Workspace from "../schema/workspace.js";
-import crudRepository from "./crudRepository.js";
-import ClientError from "../utils/errors/clientError.js";
 import { StatusCodes } from "http-status-codes";
+
 import User from "../schema/user.js";
+import Workspace from "../schema/workspace.js";
+import ClientError from "../utils/errors/clientError.js";
 import { channelRepository } from "./channelRepository.js";
+import crudRepository from "./crudRepository.js";
 
 const workspaceRepository = {
   ...crudRepository(Workspace),
@@ -70,8 +71,7 @@ const workspaceRepository = {
   },
 
   addChannelToWorkspace: async function (workspaceId, channelName) {
-    const workspace =
-      await Workspace.findById(workspaceId).populate("channels");
+    const workspace = await Workspace.findById(workspaceId);
     if (!workspace) {
       throw new ClientError({
         explanation: "Invalid data send from the client",
@@ -81,7 +81,7 @@ const workspaceRepository = {
     }
 
     const isChannelAlreadyPartOfWorkspace = workspace.channels.find(
-      (channel) => channel.channelName === channelName
+      (channel) => channel.name === channelName
     );
     if (isChannelAlreadyPartOfWorkspace) {
       throw new ClientError({
@@ -96,14 +96,16 @@ const workspaceRepository = {
       workspaceId: workspaceId,
     });
 
-    workspace.channels.push(channelId);
+    workspace.channels.push(channel);
     await workspace.save();
+
+    return workspace;
   },
 
   fetchAllWorkspaceByMemberId: async function (memberId) {
-    const workspaces = await Workspace.find(
-      "members.memberId" === memberId
-    ).populate("members.memberId", "username email avatar");
+    const workspaces = await Workspace.find({
+      "members.memberId": memberId,
+    }).populate("members.memberId", "username email avatar");
 
     if (!workspaces) {
       throw new ClientError({
@@ -117,4 +119,4 @@ const workspaceRepository = {
   },
 };
 
-export default userRepository;
+export default workspaceRepository;

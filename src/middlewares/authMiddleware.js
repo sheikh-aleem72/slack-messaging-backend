@@ -1,8 +1,8 @@
 import { StatusCodes } from "http-status-codes";
 
 import { checkIfUserExist } from "../services/userService.js";
+import { verifyJWT } from "../utils/common/authUtil.js";
 import { errorReponse } from "../utils/common/responseObject.js";
-import { verifyJWT } from "../utils/jwt.js";
 
 export const isAuthenticate = async (req, res, next) => {
   // Check if jwt token is passed in header
@@ -28,7 +28,8 @@ export const isAuthenticate = async (req, res, next) => {
       );
     }
     // Check if user still exists or not
-    const user = await checkIfUserExist(req.body.email);
+
+    const user = await checkIfUserExist(response.email);
     if (!user) {
       return res.status(StatusCodes.NOT_FOUND).json(
         errorReponse({
