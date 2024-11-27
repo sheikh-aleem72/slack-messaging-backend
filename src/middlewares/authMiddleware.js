@@ -29,12 +29,12 @@ export const isAuthenticate = async (req, res, next) => {
     }
     // Check if user still exists or not
 
-    const user = await checkIfUserExist(response.email);
+    const user = await checkIfUserExist(response._id);
     if (!user) {
       return res.status(StatusCodes.NOT_FOUND).json(
         errorReponse({
           message: "User not found",
-          explanation: `No user found with ${req.body.email} email`,
+          explanation: `No user found with this ${response._id} id`,
         })
       );
     }
@@ -49,7 +49,7 @@ export const isAuthenticate = async (req, res, next) => {
       return res.status(StatusCodes.FORBIDDEN).json(
         errorReponse({
           message: "User not found",
-          explanation: `No user found with ${req.body.email} email`,
+          explanation: `No user found`,
         })
       );
     }

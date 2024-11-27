@@ -9,6 +9,13 @@ import crudRepository from "./crudRepository.js";
 const workspaceRepository = {
   ...crudRepository(Workspace),
 
+  getWorkspaceDetailsById: async function (workspaceId) {
+    const workspace = await Workspace.findById(workspaceId)
+      .populate("members.memberId", "username email avatar")
+      .populate("channels");
+    return workspace;
+  },
+
   getWorkspaceByName: async function (workspaceName) {
     const workspace = await Workspace.findOne({ name: workspaceName });
     if (!workspace) {
@@ -68,6 +75,8 @@ const workspaceRepository = {
       role,
     });
     await workspace.save();
+
+    return workspace;
   },
 
   addChannelToWorkspace: async function (workspaceId, channelName) {

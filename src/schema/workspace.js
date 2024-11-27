@@ -29,7 +29,7 @@ const workspaceSchema = new mongoose.Schema({
   channels: [
     {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "Channels",
+      ref: "Channel",
     },
   ],
 });
