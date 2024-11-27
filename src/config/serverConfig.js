@@ -13,3 +13,11 @@ export const PROD_DB_URL = process.env.PROD_DB_URL;
 export const JWT_SECRET_KEY = process.env.JWT_SECRET_KEY;
 
 export const EXPIRY = process.env.EXPIRY;
+
+export const MAIL_PASS = process.env.MAIL_PASS;
+
+export const MAIL_ADD = process.env.MAIL_ADD;
+
+export const REDIS_HOST = process.env.REDIS_HOST || "localhost";
+
+export const REDIS_PORT = process.env.REDIS_PORT || 6370;
