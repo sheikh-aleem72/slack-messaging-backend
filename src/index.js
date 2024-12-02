@@ -1,11 +1,17 @@
 import express from "express";
+import { createServer } from "http";
 import { StatusCodes } from "http-status-codes";
+import { Server } from "socket.io";
 
 // import bullServerAdapter from "./config/billBoardConfig.js";
 import connectDB from "./config/dbConfig.js";
 import { PORT } from "./config/serverConfig.js";
+import messageSocketHandlers from "./controllers/messageSocketController.js";
 import apiRouter from "./routes/apiRouter.js";
+
 const app = express();
+const server = createServer(app);
+const io = new Server(server);
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -14,13 +20,24 @@ app.use(express.urlencoded({ extended: true }));
 
 app.use("/api", apiRouter);
 
+io.on("connection", (socket) => {
+  // console.log("a user connected", socket.id);
+
+  // socket.on("messageFromClient", (data) => {
+  //   console.log("Message from client", data);
+
+  //   io.emit("new message", data.toUpperCase()); // broasdcast
+  // });
+  messageSocketHandlers(io, socket);
+});
+
 app.get("/ping", (req, res) => {
   return res.status(StatusCodes.OK).json({
     message: "pong",
   });
 });
 
-app.listen(PORT, async () => {
+server.listen(PORT, async () => {
   console.log("Server is listening on PORT:", PORT);
   connectDB();
 });

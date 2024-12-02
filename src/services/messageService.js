@@ -40,3 +40,8 @@ export const getMessageService = async (messageParams, userId) => {
     throw error;
   }
 };
+
+export const createMessageService = async (data) => {
+  const newMessage = await messageRepository.create(data);
+  return newMessage;
+};
