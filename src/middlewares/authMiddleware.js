@@ -7,6 +7,7 @@ import { errorReponse } from "../utils/common/responseObject.js";
 export const isAuthenticate = async (req, res, next) => {
   // Check if jwt token is passed in header
   const token = req.headers["x-access-token"];
+  console.log("token for reset joincode: ", token);
   if (!token) {
     return res.status(StatusCodes.BAD_REQUEST).json(
       errorReponse({

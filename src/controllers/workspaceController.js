@@ -185,7 +185,10 @@ export const addChannelToWorkspaceController = async (req, res) => {
 
 export const resetWorkspaceJoinCodeController = async (req, res) => {
   try {
-    const response = await resetWorkspaceJoinCode(req.params.id, req.user._id);
+    const response = await resetWorkspaceJoinCode(
+      req.params.workspaceId,
+      req.user._id
+    );
     return res
       .status(StatusCodes.OK)
       .json(successResponse(response, "Workspace updated successfully"));
