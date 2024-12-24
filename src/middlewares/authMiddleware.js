@@ -45,14 +45,17 @@ export const isAuthenticate = async (req, res, next) => {
     // call the next middleware
     next();
   } catch (error) {
+    console.log("code is throwing error");
     if (error.name === "JsonWebTokenError") {
       return res.status(StatusCodes.FORBIDDEN).json(
         errorReponse({
-          message: "User not found",
-          explanation: `No user found`,
+          explanation: "Invalid data sent from the client",
+          message: "Invalid auth token provided",
         })
       );
     }
-    return res.status(error.status).json(errorReponse(error));
+    return res
+      .status(error.status || StatusCodes.INTERNAL_SERVER_ERROR)
+      .json(errorReponse(error));
   }
 };

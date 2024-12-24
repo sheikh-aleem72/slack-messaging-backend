@@ -74,7 +74,6 @@ export const createWorkspaceService = async (workspaceDetails) => {
 
 export const getAllWorkspacesUserIsMemberOfService = async (userId) => {
   try {
-    console.log("Workspace");
     const workspaces =
       await workspaceRepository.fetchAllWorkspaceByMemberId(userId);
     return workspaces;
@@ -206,6 +205,24 @@ export const updateWorkspaceService = async (
     return response;
   } catch (error) {
     console.log("Error from update workspace service: ", error);
+    throw error;
+  }
+};
+
+export const resetWorkspaceJoinCode = async (workspaceId, userId) => {
+  try {
+    const newJoinCode = uuidv4().substring(0, 6).toUpperCase();
+    const updatedWorkspace = await updateWorkspaceService(
+      workspaceId,
+      {
+        joinCode: newJoinCode,
+      },
+      userId
+    );
+
+    return updatedWorkspace;
+  } catch (error) {
+    console.log("Error from reset workspace join code service: ", error);
     throw error;
   }
 };
