@@ -336,3 +336,43 @@ export const addChannelToWorkspaceService = async (
     throw error;
   }
 };
+
+export const joinWorkspaceService = async (joinCode, workspaceId, userId) => {
+  try {
+    const workspace = await workspaceRepository.getById(workspaceId);
+    if (!workspace) {
+      throw new ClientError({
+        explanation: "No workspace is found with given details",
+        message: "No workspace found",
+        status: StatusCodes.NOT_FOUND,
+      });
+    }
+
+    if (workspace.joinCode !== joinCode) {
+      throw new ClientError({
+        explanation: "Invalid data sent from the client",
+        message: "Invalid join code",
+        statusCode: StatusCodes.UNAUTHORIZED,
+      });
+    }
+
+    const isMember = isUserMemberOfWorkspace(workspace, userId);
+    if (isMember) {
+      throw new ClientError({
+        explanation: "Invalid data sent from the client",
+        message: "User is already part of the workspace",
+        statusCode: StatusCodes.BAD_REQUEST,
+      });
+    }
+    const response = await workspaceRepository.addMembersToWorkspace(
+      workspaceId,
+      userId,
+      "member"
+    );
+
+    return response;
+  } catch (error) {
+    console.log("Error from join workspace service", error);
+    throw error;
+  }
+};

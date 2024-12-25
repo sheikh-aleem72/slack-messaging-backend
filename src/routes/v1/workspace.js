@@ -8,6 +8,7 @@ import {
   getAllWorkspacesUserIsMemberOf,
   getWorkspaceByJoinCodeController,
   getWorkspaceController,
+  joinWorkspaceController,
   resetWorkspaceJoinCodeController,
   updateWorkspaceController,
 } from "../../controllers/workspaceController.js";
@@ -26,6 +27,8 @@ router.post("/", isAuthenticate, validate(workspaceSchema), createWorkspace);
 router.get("/", isAuthenticate, getAllWorkspacesUserIsMemberOf);
 
 router.delete("/:id", isAuthenticate, deleteWorkspace);
+
+router.put("/:workspaceId/join", isAuthenticate, joinWorkspaceController);
 
 router.put("/:id", isAuthenticate, updateWorkspaceController);
 

@@ -59,9 +59,9 @@ const workspaceRepository = {
       });
     }
 
-    const isMemberAlreadyPartOfWorkspace = workspace.members.find(
-      (member) => member.memberId === memberId
-    );
+    const isMemberAlreadyPartOfWorkspace = workspace.members.find((member) => {
+      member.memberId.toString() === memberId;
+    });
     if (isMemberAlreadyPartOfWorkspace) {
       throw new ClientError({
         explanation: "Invalid data send from the client",
