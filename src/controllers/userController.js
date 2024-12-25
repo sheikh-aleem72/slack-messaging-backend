@@ -1,6 +1,10 @@
 import { StatusCodes } from "http-status-codes";
 
-import { signinUserService, signUpService } from "../services/userService.js";
+import {
+  signinUserService,
+  signUpService,
+  verifyTokenService,
+} from "../services/userService.js";
 import {
   errorReponse,
   internalServerErrror,
@@ -36,5 +40,23 @@ export const signIn = async (req, res) => {
     return res
       .status(StatusCodes.INTERNAL_SERVER_ERROR)
       .json(internalServerErrror(error));
+  }
+};
+
+export const verifyEmailController = async (req, res) => {
+  try {
+    const response = await verifyTokenService(req.params.token);
+    return res
+      .status(StatusCodes.OK)
+      .json(successResponse(response, "Email verified successfully"));
+  } catch (error) {
+    console.log("verify email controller error", error);
+    if (error.statusCode) {
+      return res.status(error.statusCode).json(customErrorResponse(error));
+    }
+
+    return res
+      .status(StatusCodes.INTERNAL_SERVER_ERROR)
+      .json(internalErrorResponse(error));
   }
 };

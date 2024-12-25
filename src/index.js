@@ -10,6 +10,7 @@ import { PORT } from "./config/serverConfig.js";
 import channelSocketHandlers from "./controllers/channelSocketController.js";
 import messageSocketHandlers from "./controllers/messageSocketController.js";
 import apiRouter from "./routes/apiRouter.js";
+import { verifyEmailController } from "./controllers/userController.js";
 
 const app = express();
 const server = createServer(app);
@@ -22,6 +23,7 @@ app.use(express.urlencoded({ extended: true }));
 // app.use("/ui", bullServerAdapter.getRouter());
 
 app.use("/api", apiRouter);
+app.get("/verify/:token", verifyEmailController);
 
 io.on("connection", (socket) => {
   // console.log("a user connected", socket.id);

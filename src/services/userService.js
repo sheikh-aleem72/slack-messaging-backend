@@ -1,14 +1,25 @@
 import bcrypt from "bcrypt";
 import { StatusCodes } from "http-status-codes";
+import { addMailToMailQueue } from "../producers/mailQueueProducer.js";
 
 import userRepository from "../repository/userRepository.js";
 import { generateJwtToken } from "../utils/common/authUtil.js";
 import ClientError from "../utils/errors/clientError.js";
 import ValidationError from "../utils/errors/validationError.js";
+import { ENABLE_EMAIL_VERIFICATION } from "../config/serverConfig.js";
+import { verifyEmailMail } from "../utils/common/mailObject.js";
 
 export const signUpService = async (user) => {
   try {
-    const newUser = await userRepository.create(user);
+    const newUser = await userRepository.signUpUser(user);
+
+    if (ENABLE_EMAIL_VERIFICATION) {
+      addMailToMailQueue({
+        ...verifyEmailMail(newUser.verificationToken),
+        to: newUser.email,
+      });
+    }
+
     return newUser;
   } catch (error) {
     console.log("singUp error", error);
@@ -76,4 +87,36 @@ export const signinUserService = async (userDetails) => {
 export const checkIfUserExist = async (id) => {
   const user = await userRepository.getById(id);
   return user;
+};
+
+export const verifyTokenService = async (token) => {
+  try {
+    const user = await userRepository.getByToken(token);
+    if (!user) {
+      throw new ClientError({
+        explanation: "Invalid data sent from the client",
+        message: "Invalid token",
+        statusCode: StatusCodes.BAD_REQUEST,
+      });
+    }
+
+    // check if the token has expired or not
+    if (user.verificationTokenExpiry < Date.now()) {
+      throw new ClientError({
+        explanation: "Invalid data sent from the client",
+        message: "Token has expired",
+        statusCode: StatusCodes.BAD_REQUEST,
+      });
+    }
+
+    user.isVerified = true;
+    user.verificationToken = null;
+    user.verificationTokenExpiry = null;
+    await user.save();
+
+    return user;
+  } catch (error) {
+    console.log("User service error", error);
+    throw error;
+  }
 };
