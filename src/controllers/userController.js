@@ -52,11 +52,11 @@ export const verifyEmailController = async (req, res) => {
   } catch (error) {
     console.log("verify email controller error", error);
     if (error.statusCode) {
-      return res.status(error.statusCode).json(customErrorResponse(error));
+      return res.status(error.statusCode).json(errorReponse(error));
     }
 
     return res
       .status(StatusCodes.INTERNAL_SERVER_ERROR)
-      .json(internalErrorResponse(error));
+      .json(internalServerErrror(error));
   }
 };

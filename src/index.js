@@ -9,12 +9,16 @@ import connectDB from "./config/dbConfig.js";
 import { PORT } from "./config/serverConfig.js";
 import channelSocketHandlers from "./controllers/channelSocketController.js";
 import messageSocketHandlers from "./controllers/messageSocketController.js";
-import apiRouter from "./routes/apiRouter.js";
 import { verifyEmailController } from "./controllers/userController.js";
+import apiRouter from "./routes/apiRouter.js";
 
 const app = express();
 const server = createServer(app);
-const io = new Server(server);
+const io = new Server(server, {
+  cors: {
+    origin: "*",
+  },
+});
 
 app.use(cors());
 app.use(express.json());

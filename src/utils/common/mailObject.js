@@ -1,4 +1,4 @@
-import { MAIL_ADD, APP_LINK } from "../../config/serverConfig.js";
+import { APP_LINK,MAIL_ADD } from "../../config/serverConfig.js";
 
 export const workspaceJoinMail = (workspace) => {
   return {

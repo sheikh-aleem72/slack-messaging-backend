@@ -1,10 +1,10 @@
 import jwt from "jsonwebtoken";
 
-import { JWT_SECRET_KEY } from "../../config/serverConfig.js";
+import { EXPIRY, JWT_SECRET_KEY } from "../../config/serverConfig.js";
 
 export const generateJwtToken = (payload) => {
   const token = jwt.sign(payload, JWT_SECRET_KEY, {
-    expiresIn: 30000,
+    expiresIn: EXPIRY,
   });
   return token;
 };
@@ -14,7 +14,7 @@ export const verifyJWT = (token) => {
     // console.log("Token received for decoding:", token);
     // console.log("JWT_SECRET_KEY:", JWT_SECRET_KEY);
 
-    // // Decode the token (structure verification, no signature validation)
+    // Decode the token (structure verification, no signature validation)
     // const decoded = jwt.decode(token, { complete: true });
     // console.log("Decoded token:", decoded);
 
@@ -24,7 +24,6 @@ export const verifyJWT = (token) => {
 
     // Verify the token (signature validation)
     const response = jwt.verify(token.trim(), JWT_SECRET_KEY.trim());
-    console.log("Token successfully verified:", response);
 
     return response;
   } catch (error) {

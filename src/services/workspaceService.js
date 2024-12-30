@@ -126,7 +126,6 @@ export const getWorkspaceService = async (workspaceId, userId) => {
       });
     }
 
-    console.log("workspace", workspace);
     const isMember = isUserMemberOfWorkspace(workspace, userId);
 
     if (!isMember) {

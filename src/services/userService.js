@@ -1,19 +1,19 @@
 import bcrypt from "bcrypt";
 import { StatusCodes } from "http-status-codes";
-import { addMailToMailQueue } from "../producers/mailQueueProducer.js";
 
+import { ENABLE_EMAIL_VERIFICATION } from "../config/serverConfig.js";
+import { addMailToMailQueue } from "../producers/mailQueueProducer.js";
 import userRepository from "../repository/userRepository.js";
 import { generateJwtToken } from "../utils/common/authUtil.js";
+import { verifyEmailMail } from "../utils/common/mailObject.js";
 import ClientError from "../utils/errors/clientError.js";
 import ValidationError from "../utils/errors/validationError.js";
-import { ENABLE_EMAIL_VERIFICATION } from "../config/serverConfig.js";
-import { verifyEmailMail } from "../utils/common/mailObject.js";
 
 export const signUpService = async (user) => {
   try {
     const newUser = await userRepository.signUpUser(user);
 
-    if (ENABLE_EMAIL_VERIFICATION) {
+    if (ENABLE_EMAIL_VERIFICATION === "true") {
       addMailToMailQueue({
         ...verifyEmailMail(newUser.verificationToken),
         to: newUser.email,

@@ -20,7 +20,6 @@ import {
 
 export const createWorkspace = async (req, res) => {
   try {
-    console.log("USER", req.user);
     const response = await createWorkspaceService({
       name: req.body.name,
       description: req.body.description,
@@ -43,7 +42,6 @@ export const createWorkspace = async (req, res) => {
 
 export const getAllWorkspacesUserIsMemberOf = async (req, res) => {
   try {
-    console.log("Api called!");
     const response = await getAllWorkspacesUserIsMemberOfService(req.user._id);
     return res
       .status(StatusCodes.OK)
@@ -207,7 +205,6 @@ export const resetWorkspaceJoinCodeController = async (req, res) => {
 
 export const joinWorkspaceController = async (req, res) => {
   try {
-    console.log("join code is: ", req.body);
     const response = await joinWorkspaceService(
       req.body.joinCode,
       req.params.workspaceId,

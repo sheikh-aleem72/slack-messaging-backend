@@ -7,7 +7,6 @@ import { errorReponse } from "../utils/common/responseObject.js";
 export const isAuthenticate = async (req, res, next) => {
   // Check if jwt token is passed in header
   const token = req.headers["x-access-token"];
-  console.log("token for reset joincode: ", token);
   if (!token) {
     return res.status(StatusCodes.BAD_REQUEST).json(
       errorReponse({
@@ -47,7 +46,10 @@ export const isAuthenticate = async (req, res, next) => {
     next();
   } catch (error) {
     console.log("code is throwing error");
-    if (error.name === "JsonWebTokenError") {
+    if (
+      error.name === "JsonWebTokenError" ||
+      error.name === "TokenExpiredError"
+    ) {
       return res.status(StatusCodes.FORBIDDEN).json(
         errorReponse({
           explanation: "Invalid data sent from the client",
