@@ -43,5 +43,7 @@ export const getMessageService = async (messageParams, userId) => {
 
 export const createMessageService = async (data) => {
   const newMessage = await messageRepository.create(data);
-  return newMessage;
+
+  const message = await messageRepository.getMessageDetails(newMessage._id);
+  return message;
 };

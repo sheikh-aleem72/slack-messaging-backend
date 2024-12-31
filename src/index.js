@@ -30,7 +30,7 @@ app.use("/api", apiRouter);
 app.get("/verify/:token", verifyEmailController);
 
 io.on("connection", (socket) => {
-  // console.log("a user connected", socket.id);
+  console.log("a user connected", socket.id);
 
   // socket.on("messageFromClient", (data) => {
   //   console.log("Message from client", data);
