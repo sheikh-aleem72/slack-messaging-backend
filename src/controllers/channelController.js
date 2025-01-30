@@ -1,6 +1,7 @@
 import { StatusCodes } from "http-status-codes";
 
 import {
+  deleteChannelService,
   getChannelByIdService,
   updateChannelService,
 } from "../services/channelService.js";
@@ -45,6 +46,28 @@ export const updateChannelController = async (req, res) => {
     return;
   } catch (error) {
     console.log("Error from update channel controller", error);
+    if (error.status) {
+      return res.status(error.status).json(errorReponse(error));
+    }
+
+    return res
+      .status(StatusCodes.INTERNAL_SERVER_ERROR)
+      .json(internalServerErrror(error));
+  }
+};
+
+export const deleteChannelController = async (req, res) => {
+  try {
+    const response = await deleteChannelService(
+      req.params.channelId,
+      req.user._id
+    );
+    res
+      .status(StatusCodes.OK)
+      .json(successResponse(response, "Channel deleted successfully"));
+    return;
+  } catch (error) {
+    console.log("Error from delete channel controller", error);
     if (error.status) {
       return res.status(error.status).json(errorReponse(error));
     }
