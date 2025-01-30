@@ -1,13 +1,13 @@
 import { StatusCodes } from "http-status-codes";
 
+import { s3 } from "../config/awsConfig.js";
+import { AWS_BUCKET_NAME } from "../config/serverConfig.js";
 import { getMessageService } from "../services/messageService.js";
 import {
   errorReponse,
   internalServerErrror,
   successResponse,
 } from "../utils/common/responseObject.js";
-import { s3 } from "../config/awsConfig.js";
-import { AWS_BUCKET_NAME } from "../config/serverConfig.js";
 
 export const getMessage = async (req, res) => {
   try {

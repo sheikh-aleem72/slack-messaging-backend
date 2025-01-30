@@ -2,7 +2,7 @@ import express from "express";
 
 import {
   getMessage,
-  getPresignedUrlFromAWS,
+  // getPresignedUrlFromAWS,
 } from "../../controllers/messageController.js";
 import { isAuthenticate } from "../../middlewares/authMiddleware.js";
 

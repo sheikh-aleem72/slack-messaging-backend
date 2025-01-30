@@ -6,7 +6,7 @@ class ClientError extends Error {
     this.name = "Client Error";
     this.message = error.message;
     this.explanation = error.explanation;
-    this.status = error.statusCode ? error.statusCode : StatusCodes.BAD_REQUEST;
+    this.status = error.status ? error.status : StatusCodes.BAD_REQUEST;
   }
 }
 
