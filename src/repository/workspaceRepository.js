@@ -126,6 +126,45 @@ const workspaceRepository = {
 
     return workspaces;
   },
+
+  addMemberToWorkspaceUsingMail: async function (workspaceId, email, role) {
+    const workspace = await Workspace.findById(workspaceId);
+    if (!workspace) {
+      throw new ClientError({
+        explanation: "Invalid data send from the client",
+        message: "Workspace not found",
+        status: StatusCodes.NOT_FOUND,
+      });
+    }
+
+    const isValidMember = await User.findOne({ email: email });
+    if (!isValidMember) {
+      throw new ClientError({
+        explanation: "Invalid data send from the client",
+        message: "User not found",
+        status: StatusCodes.NOT_FOUND,
+      });
+    }
+
+    const isMemberAlreadyPartOfWorkspace = workspace.members.find((member) => {
+      member.memberId.toString() === isValidMember._id.toString();
+    });
+    if (isMemberAlreadyPartOfWorkspace) {
+      throw new ClientError({
+        explanation: "Invalid data send from the client",
+        message: "User is already member of workspace",
+        status: StatusCodes.FORBIDDEN,
+      });
+    }
+
+    workspace.members.push({
+      memberId: isValidMember._id,
+      role,
+    });
+    await workspace.save();
+
+    return workspace;
+  },
 };
 
 export default workspaceRepository;

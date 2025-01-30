@@ -11,6 +11,7 @@ import {
   joinWorkspaceController,
   resetWorkspaceJoinCodeController,
   updateWorkspaceController,
+  addMemberToWorkspaceUsingMailController,
 } from "../../controllers/workspaceController.js";
 import { isAuthenticate } from "../../middlewares/authMiddleware.js";
 import {
@@ -37,6 +38,12 @@ router.put(
   isAuthenticate,
   validate(addMemberWorkspaceSchema),
   addMembersToWorkspaceController
+);
+
+router.put(
+  "/:id/addMembers",
+  isAuthenticate,
+  addMemberToWorkspaceUsingMailController
 );
 
 router.put(

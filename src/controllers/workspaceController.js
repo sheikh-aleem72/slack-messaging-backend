@@ -3,6 +3,7 @@ import { StatusCodes } from "http-status-codes";
 import {
   addChannelToWorkspaceService,
   addMemberToWorkspaceService,
+  addMemberToWorkspaceUsingMailService,
   createWorkspaceService,
   deleteWorkspaceService,
   getAllWorkspacesUserIsMemberOfService,
@@ -216,6 +217,31 @@ export const joinWorkspaceController = async (req, res) => {
       .json(successResponse(response, "You have been joined successfully"));
   } catch (error) {
     console.log("Error from join workspace controller", error);
+    if (error.status) {
+      return res.status(error.status).json(errorReponse(error));
+    }
+
+    return res
+      .status(StatusCodes.INTERNAL_SERVER_ERROR)
+      .json(internalServerErrror(error));
+  }
+};
+
+export const addMemberToWorkspaceUsingMailController = async (req, res) => {
+  try {
+    const response = await addMemberToWorkspaceUsingMailService(
+      req.params.id,
+      req.body.email,
+      req.user._id
+    );
+    return res
+      .status(StatusCodes.OK)
+      .json(successResponse(response, "Member added successfully"));
+  } catch (error) {
+    console.log(
+      "Error from add member to workspace using mail controller",
+      error
+    );
     if (error.status) {
       return res.status(error.status).json(errorReponse(error));
     }

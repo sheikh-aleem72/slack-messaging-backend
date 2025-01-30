@@ -375,3 +375,63 @@ export const joinWorkspaceService = async (joinCode, workspaceId, userId) => {
     throw error;
   }
 };
+
+export const addMemberToWorkspaceUsingMailService = async (
+  workspaceId,
+  email,
+  userId
+) => {
+  try {
+    const workspace = await workspaceRepository.getById(workspaceId);
+    if (!workspace) {
+      throw new ClientError({
+        explanation: "No workspace is found with given details",
+        message: "No workspace found",
+        status: StatusCodes.NOT_FOUND,
+      });
+    }
+
+    const isAdmin = isUserAdminOfWorkspace(workspace, userId);
+    if (!isAdmin) {
+      throw new ClientError({
+        explanation: "User is not authorized to make changes",
+        message: "Unauthorized User",
+        status: StatusCodes.NOT_FOUND,
+      });
+    }
+
+    const isValidUser = await userRepository.getUserByEmail(email);
+    if (!isValidUser) {
+      throw new ClientError({
+        explanation: "Invalid data sent from the client",
+        message: "User not found",
+        statusCode: StatusCodes.NOT_FOUND,
+      });
+    }
+
+    const isMember = isUserMemberOfWorkspace(workspace, isValidUser._id);
+    if (isMember) {
+      throw new ClientError({
+        explanation: "User with this details already exists",
+        message: "User already exists",
+        status: StatusCodes.BAD_REQUEST,
+      });
+    }
+
+    const response = await workspaceRepository.addMemberToWorkspaceUsingMail(
+      workspaceId,
+      email,
+      "member"
+    );
+
+    addMailToMailQueue({
+      ...workspaceJoinMail(workspace),
+      to: isValidUser.email,
+    });
+
+    return response;
+  } catch (error) {
+    console.log("Error from add member to workspace using mail service", error);
+    throw error;
+  }
+};
