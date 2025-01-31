@@ -3,6 +3,7 @@ import express from "express";
 import {
   addChannelToWorkspaceController,
   addMembersToWorkspaceController,
+  addMemberToWorkspaceUsingMailController,
   createWorkspace,
   deleteWorkspace,
   getAllWorkspacesUserIsMemberOf,
@@ -11,11 +12,11 @@ import {
   joinWorkspaceController,
   resetWorkspaceJoinCodeController,
   updateWorkspaceController,
-  addMemberToWorkspaceUsingMailController,
 } from "../../controllers/workspaceController.js";
 import { isAuthenticate } from "../../middlewares/authMiddleware.js";
 import {
   addChannelToWorkspaceSchema,
+  addMemberUsingMailSchema,
   addMemberWorkspaceSchema,
   workspaceSchema,
 } from "../../validators/workspaceSchema.js";
@@ -43,6 +44,7 @@ router.put(
 router.put(
   "/:id/addMembers",
   isAuthenticate,
+  validate(addMemberUsingMailSchema),
   addMemberToWorkspaceUsingMailController
 );
 

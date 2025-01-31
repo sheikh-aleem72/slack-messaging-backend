@@ -275,10 +275,10 @@ export const addMemberToWorkspaceService = async (
       role
     );
 
-    addMailToMailQueue({
-      ...workspaceJoinMail(workspace),
-      to: isValidUser.email,
-    });
+    // addMailToMailQueue({
+    //   ...workspaceJoinMail(workspace),
+    //   to: isValidUser.email,
+    // });
 
     return response;
   } catch (error) {
@@ -404,12 +404,16 @@ export const addMemberToWorkspaceUsingMailService = async (
     if (!isValidUser) {
       throw new ClientError({
         explanation: "Invalid data sent from the client",
-        message: "User not found",
+        message: "No user found with given email",
         statusCode: StatusCodes.NOT_FOUND,
       });
     }
 
-    const isMember = isUserMemberOfWorkspace(workspace, isValidUser._id);
+    const isMember = isUserMemberOfWorkspace(
+      workspace,
+      isValidUser._id.toString()
+    );
+    console.log("Is member part", isMember);
     if (isMember) {
       throw new ClientError({
         explanation: "User with this details already exists",
@@ -424,10 +428,10 @@ export const addMemberToWorkspaceUsingMailService = async (
       "member"
     );
 
-    addMailToMailQueue({
-      ...workspaceJoinMail(workspace),
-      to: isValidUser.email,
-    });
+    // addMailToMailQueue({
+    //   ...workspaceJoinMail(workspace),
+    //   to: isValidUser.email,
+    // });
 
     return response;
   } catch (error) {

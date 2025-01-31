@@ -2,7 +2,10 @@ import { StatusCodes } from "http-status-codes";
 
 import { s3 } from "../config/awsConfig.js";
 import { AWS_BUCKET_NAME } from "../config/serverConfig.js";
-import { getMessageService } from "../services/messageService.js";
+import {
+  deleteMessageService,
+  getMessageService,
+} from "../services/messageService.js";
 import {
   errorReponse,
   internalServerErrror,
@@ -47,6 +50,24 @@ export const getPresignedUrlFromAWS = async (req, res) => {
       .json(successResponse(url, "Presigned URL generated successfully"));
   } catch (error) {
     console.log("Error in getPresignedUrlFromAWS", error);
+    if (error.status) {
+      return res.status(error.status).json(errorReponse(error));
+    }
+
+    return res
+      .status(StatusCodes.INTERNAL_SERVER_ERROR)
+      .json(internalServerErrror(error));
+  }
+};
+
+export const deleteMessageController = async (req, res) => {
+  try {
+    const response = await deleteMessageService(req.params.messageId);
+    return res
+      .status(StatusCodes.OK)
+      .json(successResponse(response, "Message Deleted Successfully"));
+  } catch (error) {
+    console.log("Error in delete message controller", error);
     if (error.status) {
       return res.status(error.status).json(errorReponse(error));
     }

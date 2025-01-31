@@ -11,3 +11,7 @@ export const addMemberWorkspaceSchema = z.object({
 export const addChannelToWorkspaceSchema = z.object({
   channelName: z.string(),
 });
+
+export const addMemberUsingMailSchema = z.object({
+  email: z.string().email(),
+});

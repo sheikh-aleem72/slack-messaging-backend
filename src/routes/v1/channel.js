@@ -1,9 +1,9 @@
 import express from "express";
 
 import {
+  deleteChannelController,
   getChannelByIdController,
   updateChannelController,
-  deleteChannelController,
 } from "../../controllers/channelController.js";
 import { isAuthenticate } from "../../middlewares/authMiddleware.js";
 

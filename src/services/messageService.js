@@ -47,3 +47,13 @@ export const createMessageService = async (data) => {
   const message = await messageRepository.getMessageDetails(newMessage._id);
   return message;
 };
+
+export const deleteMessageService = async (messageId) => {
+  try {
+    const response = await messageRepository.delete(messageId);
+    return response;
+  } catch (error) {
+    console.log("Error from delete message service: ", error);
+    throw error;
+  }
+};

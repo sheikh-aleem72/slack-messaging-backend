@@ -45,7 +45,7 @@ export const isAuthenticate = async (req, res, next) => {
     // call the next middleware
     next();
   } catch (error) {
-    console.log("code is throwing error");
+    console.log("code is throwing error related to token");
     if (
       error.name === "JsonWebTokenError" ||
       error.name === "TokenExpiredError"
