@@ -1,11 +1,11 @@
 import { StatusCodes } from "http-status-codes";
 import { v4 as uuidv4 } from "uuid";
 
-import { addMailToMailQueue } from "../producers/mailQueueProducer.js";
+// import { addMailToMailQueue } from "../producers/mailQueueProducer.js";
 import { channelRepository } from "../repository/channelRepository.js";
 import userRepository from "../repository/userRepository.js";
 import workspaceRepository from "../repository/workspaceRepository.js";
-import { workspaceJoinMail } from "../utils/common/mailObject.js";
+// import { workspaceJoinMail } from "../utils/common/mailObject.js";
 import ClientError from "../utils/errors/clientError.js";
 import ValidationError from "../utils/errors/validationError.js";
 

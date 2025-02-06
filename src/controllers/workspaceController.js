@@ -44,7 +44,6 @@ export const createWorkspace = async (req, res) => {
 export const getAllWorkspacesUserIsMemberOf = async (req, res) => {
   try {
     const response = await getAllWorkspacesUserIsMemberOfService(req.user._id);
-    console.log("workspaces:", response);
     return res
       .status(StatusCodes.OK)
       .json(successResponse(response, "All workspaces fetched successfully"));
