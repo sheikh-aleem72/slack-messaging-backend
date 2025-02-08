@@ -17,7 +17,12 @@ const messageSchema = new mongoose.Schema(
     channelId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Channel",
-      required: [true, "Channel id is required"],
+      default: null, // only used for channel messages
+    },
+    privateChatId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "PrivateChat",
+      default: null, // only used for direct messages
     },
     workspaceId: {
       type: mongoose.Schema.Types.ObjectId,

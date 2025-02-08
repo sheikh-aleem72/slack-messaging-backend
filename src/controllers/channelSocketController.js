@@ -12,7 +12,7 @@ export default function messageHandler(io, socket) {
     });
   });
 
-  socket.on(LEAVE_CHANNEL, async function leaveChannelHandler(data, cb) {
+  socket.on(LEAVE_CHANNEL, async function leaveChannelHandler(data) {
     const roomId = data.channelId;
     socket.leave(roomId);
     console.log(`User ${socket.id} have leaved the channel: ${roomId}`);
