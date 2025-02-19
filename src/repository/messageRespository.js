@@ -18,4 +18,14 @@ export const messageRepository = {
     );
     return message;
   },
+  getPrivateChatMessages: async function (messageParams) {
+    const messages = await Message.find({
+      privateChatId: messageParams.privateChatId,
+    })
+      .sort({ createdAt: 1 })
+      .skip((messageParams.page - 1) * messageParams.limit)
+      .limit(messageParams.limit)
+      .populate("senderId", "username email avatar");
+    return messages;
+  },
 };

@@ -4,6 +4,7 @@ import { channelRepository } from "../repository/channelRepository.js";
 import { messageRepository } from "../repository/messageRespository.js";
 import { isUserMemberOfWorkspace } from "../services/workspaceService.js";
 import ClientError from "../utils/errors/clientError.js";
+import PrivateChat from "../schema/privateChat.js";
 
 export const getMessageService = async (messageParams, userId) => {
   try {
@@ -54,6 +55,38 @@ export const deleteMessageService = async (messageId) => {
     return response;
   } catch (error) {
     console.log("Error from delete message service: ", error);
+    throw error;
+  }
+};
+
+export const getPrivateMessageService = async (messageParams) => {
+  try {
+    const privateChat = await PrivateChat.findById(messageParams.privateChatId);
+
+    if (!privateChat) {
+      throw new ClientError({
+        message: "privateChat not found",
+        explanation: "Invalid details sent from the client",
+        status: StatusCodes.NOT_FOUND,
+      });
+    }
+
+    const isMember = privateChat.participants.find((member) => {
+      return member._id === userId;
+    });
+    if (!isMember) {
+      throw new ClientError({
+        message: "User is not member of workspace",
+        explanation: "User is not member of workspace",
+        status: StatusCodes.UNAUTHORIZED,
+      });
+    }
+
+    const messages =
+      await messageRepository.getPrivateChatMessages(messageParams);
+    return messages;
+  } catch (error) {
+    console.log("Error from get private messages service", error);
     throw error;
   }
 };

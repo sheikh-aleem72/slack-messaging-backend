@@ -27,7 +27,7 @@ const messageSchema = new mongoose.Schema(
     workspaceId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Workspace",
-      required: [true, "workspace id is required"],
+      default: null,
     },
   },
   { timestamps: true }

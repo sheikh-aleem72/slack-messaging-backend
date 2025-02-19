@@ -4,10 +4,15 @@ import {
   JOIN_PRIVATE_CHAT,
   NEW_PRIVATE_MESSAGE_RECEIVED,
   SEND_PRIVATE_MESSAGE,
-} from "../utils/common/eventConstant";
+} from "../utils/common/eventConstant.js";
 
 export async function privateChatHandler(socket, io) {
-  socket.on(JOIN_PRIVATE_CHAT, async ({ userId, otherUserId }) => {
+  socket.on(JOIN_PRIVATE_CHAT, async ({ userId, otherUserId }, cb) => {
+    console.log(
+      "We are reaching till join private chat event",
+      userId,
+      otherUserId
+    );
     let privateChat = await PrivateChat.findOne({
       participants: { $all: [userId, otherUserId] },
       isDirectMessage: true,
@@ -19,28 +24,48 @@ export async function privateChatHandler(socket, io) {
     }
 
     socket.join(privateChat._id.toString());
+
+    console.log(
+      `User ${socket.id} joined the private chat: ${privateChat._id}`
+    );
+    cb({
+      success: true,
+      message: "User has joined private chat successfully",
+      data: privateChat._id,
+    });
   });
 
-  socket.on(SEND_PRIVATE_MESSAGE, async ({ senderId, receiverId, message }) => {
-    let privateChat = await PrivateChat.findOne({
-      participants: { $all: [senderId, receiverId] },
-      isDirectMessage: true,
-    });
+  socket.on(
+    SEND_PRIVATE_MESSAGE,
+    async ({ senderId, receiverId, body }, cb) => {
+      let privateChat = await PrivateChat.findOne({
+        participants: { $all: [senderId, receiverId] },
+        isDirectMessage: true,
+      });
 
-    if (!privateChat) {
-      privateChat = new PrivateChat({ participants: [senderId, receiverId] });
-      await privateChat.save();
+      if (!privateChat) {
+        privateChat = new PrivateChat({ participants: [senderId, receiverId] });
+        await privateChat.save();
+      }
+
+      const newMessage = new Message({
+        senderId,
+        body: body,
+        privateChatId: privateChat._id,
+      });
+
+      await newMessage.save();
+
+      // Emit message to both the member
+      io.to(privateChat._id.toString()).emit(
+        NEW_PRIVATE_MESSAGE_RECEIVED,
+        newMessage
+      );
+      cb({
+        success: true,
+        message: "Successfully created the message",
+        data: newMessage,
+      });
     }
-
-    const newMessage = new Message({
-      senderId,
-      body: message,
-      privateChatId: privateChat._id,
-    });
-
-    await newMessage.save();
-
-    // Emit message to both the member
-    io.to(privateChat._id).emit(NEW_PRIVATE_MESSAGE_RECEIVED, newMessage);
-  });
+  );
 }

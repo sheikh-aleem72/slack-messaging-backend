@@ -12,6 +12,7 @@ import messageSocketHandlers from "./controllers/messageSocketController.js";
 import { verifyEmailController } from "./controllers/userController.js";
 import apiRouter from "./routes/apiRouter.js";
 import { socketEvents } from "./utils/common/eventsUtil.js";
+import { privateChatHandler } from "./controllers/privateChatSocketController.js";
 
 const app = express();
 const server = createServer(app);
@@ -41,6 +42,7 @@ io.on("connection", (socket) => {
   // });
   messageSocketHandlers(io, socket);
   channelSocketHandlers(io, socket);
+  privateChatHandler(socket, io);
 });
 
 app.get("/ping", (req, res) => {

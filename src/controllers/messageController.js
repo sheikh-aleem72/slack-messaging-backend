@@ -77,3 +77,29 @@ export const deleteMessageController = async (req, res) => {
       .json(internalServerErrror(error));
   }
 };
+
+export const getPrivateMessages = async (req, res) => {
+  try {
+    const messages = await getMessageService(
+      {
+        privateChatId: req.params.privateChatId,
+        page: req.body.page,
+        limit: req.body.limit,
+      },
+      req.user._id
+    );
+
+    return res
+      .status(StatusCodes.OK)
+      .json(successResponse(messages, "Messages fetched successfully"));
+  } catch (error) {
+    console.log("Error in get private message controller", error);
+    if (error.status) {
+      return res.status(error.status).json(errorReponse(error));
+    }
+
+    return res
+      .status(StatusCodes.INTERNAL_SERVER_ERROR)
+      .json(internalServerErrror(error));
+  }
+};
