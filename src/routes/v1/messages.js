@@ -12,7 +12,7 @@ const router = express.Router();
 
 router.get("/:channelId", isAuthenticate, getMessage);
 
-router.get("/:privateChatId", isAuthenticate, getPrivateMessages);
+router.get("/privateMessages/:memberId", isAuthenticate, getPrivateMessages);
 
 // router.get('/pre-signed-url', isAuthenticate, getPresignedUrlFromAWS); // For presigned url
 

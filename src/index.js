@@ -9,10 +9,10 @@ import connectDB from "./config/dbConfig.js";
 import { PORT } from "./config/serverConfig.js";
 import channelSocketHandlers from "./controllers/channelSocketController.js";
 import messageSocketHandlers from "./controllers/messageSocketController.js";
+import { privateChatHandler } from "./controllers/privateChatSocketController.js";
 import { verifyEmailController } from "./controllers/userController.js";
 import apiRouter from "./routes/apiRouter.js";
 import { socketEvents } from "./utils/common/eventsUtil.js";
-import { privateChatHandler } from "./controllers/privateChatSocketController.js";
 
 const app = express();
 const server = createServer(app);
