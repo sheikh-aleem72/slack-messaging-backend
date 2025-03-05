@@ -2,9 +2,9 @@ import { StatusCodes } from "http-status-codes";
 
 import { channelRepository } from "../repository/channelRepository.js";
 import { messageRepository } from "../repository/messageRespository.js";
+import PrivateChat from "../schema/privateChat.js";
 import { isUserMemberOfWorkspace } from "../services/workspaceService.js";
 import ClientError from "../utils/errors/clientError.js";
-import PrivateChat from "../schema/privateChat.js";
 
 export const getMessageService = async (messageParams, userId) => {
   try {
@@ -59,7 +59,7 @@ export const deleteMessageService = async (messageId) => {
   }
 };
 
-export const getPrivateMessageService = async (messageParams) => {
+export const getPrivateMessageService = async (messageParams, userId) => {
   try {
     const privateChat = await PrivateChat.findById(messageParams.privateChatId);
 
