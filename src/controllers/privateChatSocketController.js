@@ -1,5 +1,6 @@
 import Message from "../schema/message.js";
 import PrivateChat from "../schema/privateChat.js";
+import { createMessageService } from "../services/messageService.js";
 import {
   JOIN_PRIVATE_CHAT,
   LEAVE_PRIVATE_CHAT,
@@ -44,10 +45,10 @@ export async function privateChatHandler(socket, io) {
         await privateChat.save();
       }
 
-      const newMessage = new Message({
+      const newMessage = await createMessageService({
         senderId,
-        body: body,
-        privateChatId: privateChat._id,
+        body,
+        privateChatId: privateChat?._id,
       });
 
       await newMessage.save();
@@ -65,9 +66,18 @@ export async function privateChatHandler(socket, io) {
     }
   );
 
-  socket.on(LEAVE_PRIVATE_CHAT, async function leaveChannelHandler(data) {
-    const roomId = data.privateChatId;
-    socket.leave(roomId);
-    console.log(`User ${socket.id} have leaved the channel: ${roomId}`);
-  });
+  socket.on(
+    LEAVE_PRIVATE_CHAT,
+    async function leaveChannelHandler({ userId, otherUserId }) {
+      let privateChat = await PrivateChat.findOne({
+        participants: { $all: [userId, otherUserId] },
+        isDirectMessage: true,
+      });
+
+      socket.leave(privateChat?._id);
+      console.log(
+        `User ${socket.id} have leaved the private chat: ${privateChat?._id}`
+      );
+    }
+  );
 }
