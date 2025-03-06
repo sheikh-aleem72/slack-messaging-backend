@@ -2,17 +2,13 @@ import Message from "../schema/message.js";
 import PrivateChat from "../schema/privateChat.js";
 import {
   JOIN_PRIVATE_CHAT,
+  LEAVE_PRIVATE_CHAT,
   NEW_PRIVATE_MESSAGE_RECEIVED,
   SEND_PRIVATE_MESSAGE,
 } from "../utils/common/eventConstant.js";
 
 export async function privateChatHandler(socket, io) {
   socket.on(JOIN_PRIVATE_CHAT, async ({ userId, otherUserId }, cb) => {
-    console.log(
-      "We are reaching till join private chat event",
-      userId,
-      otherUserId
-    );
     let privateChat = await PrivateChat.findOne({
       participants: { $all: [userId, otherUserId] },
       isDirectMessage: true,
@@ -68,4 +64,10 @@ export async function privateChatHandler(socket, io) {
       });
     }
   );
+
+  socket.on(LEAVE_PRIVATE_CHAT, async function leaveChannelHandler(data) {
+    const roomId = data.privateChatId;
+    socket.leave(roomId);
+    console.log(`User ${socket.id} have leaved the channel: ${roomId}`);
+  });
 }

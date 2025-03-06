@@ -10,5 +10,6 @@ export const STOP_TYPING = "stopTyping";
 export const USER_TYPING = "userTyping";
 export const USER_STOPPED_TYPING = "userStoppedTyping";
 export const JOIN_PRIVATE_CHAT = "joinPrivateChat";
+export const LEAVE_PRIVATE_CHAT = "leavePrivateChat";
 export const SEND_PRIVATE_MESSAGE = "sendPrivateMessage";
 export const NEW_PRIVATE_MESSAGE_RECEIVED = "newPrivateMessageReceived";

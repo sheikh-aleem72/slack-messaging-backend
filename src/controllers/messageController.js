@@ -5,6 +5,7 @@ import { AWS_BUCKET_NAME } from "../config/serverConfig.js";
 import {
   deleteMessageService,
   getMessageService,
+  getPrivateMessageService,
 } from "../services/messageService.js";
 import {
   errorReponse,
@@ -80,9 +81,9 @@ export const deleteMessageController = async (req, res) => {
 
 export const getPrivateMessages = async (req, res) => {
   try {
-    const messages = await getMessageService(
+    const messages = await getPrivateMessageService(
       {
-        privateChatId: req.params.privateChatId,
+        otherUserId: req.params.memberId,
         page: req.body.page,
         limit: req.body.limit,
       },

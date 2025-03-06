@@ -61,7 +61,10 @@ export const deleteMessageService = async (messageId) => {
 
 export const getPrivateMessageService = async (messageParams, userId) => {
   try {
-    const privateChat = await PrivateChat.findById(messageParams.privateChatId);
+    const privateChat = await PrivateChat.findOne({
+      participants: { $all: [userId, messageParams.otherUserId] },
+      isDirectMessage: true,
+    });
 
     if (!privateChat) {
       throw new ClientError({
@@ -72,7 +75,7 @@ export const getPrivateMessageService = async (messageParams, userId) => {
     }
 
     const isMember = privateChat.participants.find((member) => {
-      return member._id === userId;
+      return member._id.toString() === userId;
     });
     if (!isMember) {
       throw new ClientError({
@@ -82,8 +85,10 @@ export const getPrivateMessageService = async (messageParams, userId) => {
       });
     }
 
-    const messages =
-      await messageRepository.getPrivateChatMessages(messageParams);
+    const messages = await messageRepository.getPrivateChatMessages({
+      ...messageParams,
+      privateChatId: privateChat._id,
+    });
     return messages;
   } catch (error) {
     console.log("Error from get private messages service", error);
