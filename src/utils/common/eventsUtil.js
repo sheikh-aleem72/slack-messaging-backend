@@ -1,3 +1,4 @@
+import PrivateChat from "../../schema/privateChat.js";
 import {
   ACTIVE_USERS,
   DISCONNECTED,
@@ -26,11 +27,34 @@ export const socketEvents = (socket, io) => {
     }
   });
 
-  socket.on(TYPING, ({ user, channelId }) => {
-    socket.to(channelId).emit(USER_TYPING, { user, channelId });
+  socket.on(TYPING, async ({ user, channelId, memberId }) => {
+    if (channelId) {
+      socket.to(channelId).emit(USER_TYPING, { user, channelId });
+    } else if (memberId) {
+      let privateChat = await PrivateChat.findOne({
+        participants: { $all: [user, memberId] },
+        isDirectMessage: true,
+      });
+
+      socket
+        .to(privateChat._id.toString())
+        .emit(USER_TYPING, { user, privateChatId: privateChat._id.toString() });
+    }
   });
 
-  socket.on(STOP_TYPING, ({ user, channelId }) => {
-    socket.to(channelId).emit(USER_STOPPED_TYPING, { user, channelId });
+  socket.on(STOP_TYPING, async ({ user, channelId, memberId }) => {
+    if (channelId) {
+      socket.to(channelId).emit(USER_STOPPED_TYPING, { user, channelId });
+    } else if (memberId) {
+      let privateChat = await PrivateChat.findOne({
+        participants: { $all: [user, memberId] },
+        isDirectMessage: true,
+      });
+
+      socket.to(privateChat._id.toString()).emit(USER_STOPPED_TYPING, {
+        user,
+        privateChatId: privateChat._id.toString(),
+      });
+    }
   });
 };
