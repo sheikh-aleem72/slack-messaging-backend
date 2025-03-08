@@ -1,7 +1,12 @@
 import { StatusCodes } from "http-status-codes";
 
 import { s3 } from "../config/awsConfig.js";
-import { AWS_BUCKET_NAME } from "../config/serverConfig.js";
+import {
+  AWS_BUCKET_NAME,
+  CLOUDINARY_API_SECRET,
+  CLOUDINARY_CLOUD_NAME,
+  CLOUDINARY_UPLOAD_URL,
+} from "../config/serverConfig.js";
 import {
   deleteMessageService,
   getMessageService,
@@ -12,6 +17,7 @@ import {
   internalServerErrror,
   successResponse,
 } from "../utils/common/responseObject.js";
+import cloudinary from "../config/cloudinaryConfig.js";
 
 export const getMessage = async (req, res) => {
   try {
@@ -95,6 +101,66 @@ export const getPrivateMessages = async (req, res) => {
       .json(successResponse(messages, "Messages fetched successfully"));
   } catch (error) {
     console.log("Error in get private message controller", error);
+    if (error.status) {
+      return res.status(error.status).json(errorReponse(error));
+    }
+
+    return res
+      .status(StatusCodes.INTERNAL_SERVER_ERROR)
+      .json(internalServerErrror(error));
+  }
+};
+
+export const getPresignedUrlFromCloudinary = async (req, res) => {
+  try {
+    console.log("Reaching here");
+    const timestamp = Math.round(new Date().getTime() / 1000);
+
+    const params = {
+      timestamp,
+      folder: "chat_images", // Optional: Store images in a folder
+    };
+
+    const signature = cloudinary.utils.api_sign_request(
+      params,
+      process.env.CLOUDINARY_API_SECRET
+    );
+
+    const uploadUrl = `https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD_NAME}/image/upload`;
+
+    return res.json({
+      uploadUrl,
+      signature,
+      timestamp,
+      apiKey: process.env.CLOUDINARY_API_KEY,
+      folder: params.folder,
+    });
+  } catch (error) {
+    console.log("Error generating presigned URL:", error);
+    if (error.status) {
+      return res.status(error.status).json(errorReponse(error));
+    }
+
+    return res
+      .status(StatusCodes.INTERNAL_SERVER_ERROR)
+      .json(internalServerErrror(error));
+  }
+};
+
+export const deleteImageController = async (req, res) => {
+  try {
+    const { imageUrl } = req.body;
+
+    // extract public ID from the URL
+    const publicId = imageUrl.split("/").pop().split(".")[0];
+
+    await cloudinary.uploader.destroy(publicId);
+
+    return res
+      .status(StatusCodes.OK)
+      .json(successResponse("Image deleted successfully"));
+  } catch (error) {
+    console.log("Error deleting image:", error);
     if (error.status) {
       return res.status(error.status).json(errorReponse(error));
     }

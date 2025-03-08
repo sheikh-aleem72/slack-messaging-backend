@@ -1,4 +1,3 @@
-import Message from "../schema/message.js";
 import PrivateChat from "../schema/privateChat.js";
 import { createMessageService } from "../services/messageService.js";
 import {
