@@ -1,11 +1,10 @@
 import { StatusCodes } from "http-status-codes";
 
 import { s3 } from "../config/awsConfig.js";
+import cloudinary from "../config/cloudinaryConfig.js";
 import {
   AWS_BUCKET_NAME,
-  CLOUDINARY_API_SECRET,
   CLOUDINARY_CLOUD_NAME,
-  CLOUDINARY_UPLOAD_URL,
 } from "../config/serverConfig.js";
 import {
   deleteMessageService,
@@ -17,7 +16,6 @@ import {
   internalServerErrror,
   successResponse,
 } from "../utils/common/responseObject.js";
-import cloudinary from "../config/cloudinaryConfig.js";
 
 export const getMessage = async (req, res) => {
   try {
@@ -113,7 +111,6 @@ export const getPrivateMessages = async (req, res) => {
 
 export const getPresignedUrlFromCloudinary = async (req, res) => {
   try {
-    console.log("Reaching here");
     const timestamp = Math.round(new Date().getTime() / 1000);
 
     const params = {

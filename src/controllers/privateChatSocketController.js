@@ -33,7 +33,7 @@ export async function privateChatHandler(socket, io) {
 
   socket.on(
     SEND_PRIVATE_MESSAGE,
-    async ({ senderId, receiverId, body }, cb) => {
+    async ({ senderId, receiverId, body, image }, cb) => {
       let privateChat = await PrivateChat.findOne({
         participants: { $all: [senderId, receiverId] },
         isDirectMessage: true,
@@ -47,6 +47,7 @@ export async function privateChatHandler(socket, io) {
       const newMessage = await createMessageService({
         senderId,
         body,
+        image,
         privateChatId: privateChat?._id,
       });
 
