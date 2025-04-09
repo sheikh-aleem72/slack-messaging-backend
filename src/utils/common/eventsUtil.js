@@ -36,12 +36,10 @@ export const socketEvents = (socket, io) => {
         isDirectMessage: true,
       });
 
-      socket
-        .to(privateChat?._id.toString())
-        .emit(USER_TYPING, {
-          user,
-          privateChatId: privateChat?._id.toString(),
-        });
+      socket.to(privateChat?._id.toString()).emit(USER_TYPING, {
+        user,
+        privateChatId: privateChat?._id.toString(),
+      });
     }
   });
 
@@ -54,9 +52,9 @@ export const socketEvents = (socket, io) => {
         isDirectMessage: true,
       });
 
-      socket.to(privateChat._id.toString()).emit(USER_STOPPED_TYPING, {
+      socket.to(privateChat?._id.toString()).emit(USER_STOPPED_TYPING, {
         user,
-        privateChatId: privateChat._id.toString(),
+        privateChatId: privateChat?._id.toString(),
       });
     }
   });
