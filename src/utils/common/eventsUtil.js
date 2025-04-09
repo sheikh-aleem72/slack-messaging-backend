@@ -37,8 +37,11 @@ export const socketEvents = (socket, io) => {
       });
 
       socket
-        .to(privateChat._id.toString())
-        .emit(USER_TYPING, { user, privateChatId: privateChat._id.toString() });
+        .to(privateChat?._id.toString())
+        .emit(USER_TYPING, {
+          user,
+          privateChatId: privateChat?._id.toString(),
+        });
     }
   });
 
