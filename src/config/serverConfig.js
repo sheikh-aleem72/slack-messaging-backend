@@ -34,3 +34,11 @@ export const AWS_ACCESS_KEY_ID = process.env.AWS_ACCESS_KEY_ID;
 export const AWS_SECRET_ACCESS_KEY = process.env.AWS_SECRET_ACCESS_KEY;
 
 export const AWS_BUCKET_NAME = process.env.AWS_BUCKET_NAME;
+
+export const CLOUDINARY_CLOUD_NAME = process.env.CLOUDINARY_CLOUD_NAME;
+
+export const CLOUDINARY_API_KEY = process.env.CLOUDINARY_API_KEY;
+
+export const CLOUDINARY_API_SECRET = process.env.CLOUDINARY_API_SECRET;
+
+export const CLOUDINARY_UPLOAD_URL = `https://api.cloudinary.com/v1_1/${process.env.CLOUDINARY_CLOUD_NAME}/upload`;
